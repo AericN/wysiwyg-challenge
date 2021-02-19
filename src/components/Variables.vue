@@ -11,7 +11,7 @@
 
     <!-- Variable list -->
     <div class="list mt-2">
-        <!-- Titles -->
+      <!-- Titles -->
       <v-row>
         <v-col cols="6" class="pl-4">
           Name
@@ -40,7 +40,18 @@
     <!-- Load button and selected variable name -->
     <v-row class="mt-1">
       <v-col>
-        <v-btn @click="loadVariable" :disabled="!validVariableSelection" small>Load Variable</v-btn>
+        <v-btn @click="loadVariable" :disabled="!validVariableSelection" small color="#2196F3">
+          Load Variable
+        </v-btn>
+        <v-btn
+          @click="removeVariable"
+          :disabled="!validVariableSelection"
+          small
+          class="ml-1"
+          color="red"
+        >
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
         <div class="d-inline ml-3">{{ selectedVariable }}</div>
       </v-col>
     </v-row>
@@ -63,20 +74,37 @@ export default {
   methods: {
     loadVariable() {
       Bus.$emit('loadVariable', this.selectedVariable)
-      this.selectedVariable = ''
-      this.validTemplateSelection = false
+      this.clearData()
     },
     updateSelected(name) {
+      // add variable info to input boxes for optional updating
+      this.name = name
+      this.value = this.variables[name]
+
+      // notify of selection and enable load button
       this.selectedVariable = name
       if (this.selectedVariable != '') {
         this.validVariableSelection = true
-        console.log(`selected variable ${this.selectedVariable}`)
       }
     },
     addVariable() {
       this.variables[this.name] = this.value
-      localStorage.variables = JSON.stringify(this.variables)
+      this.save(JSON.stringify(this.variables))
+    },
+    removeVariable() {
+      delete this.variables[this.name]
+      this.save(JSON.stringify(this.variables))
+    },
+    save(jsonString) {
+      localStorage.variables = jsonString
       this.$emit('savedVariable')
+      this.clearData()
+    },
+    clearData() {
+      this.name = ''
+      this.value = ''
+      this.selectedVariable = ''
+      this.validVariableSelection = false
     }
   },
   computed: {
@@ -84,7 +112,7 @@ export default {
       if (this.name == '' || this.value == '') {
         return true
       } else {
-          return false
+        return false
       }
     }
   }

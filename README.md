@@ -1,5 +1,10 @@
 # wysiwyg
 
+## Hosted at
+```
+AericN.github.io
+```
+
 ## Project setup
 ```
 npm install
@@ -19,11 +24,7 @@ npm run build
 ```
 npm run test:unit
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
+Basic unit tests for app-bar display.
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

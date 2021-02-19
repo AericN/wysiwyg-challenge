@@ -16,7 +16,18 @@
     <!-- Load button and selected template name -->
     <v-row class="mt-1">
       <v-col>
-        <v-btn @click="loadTemplate" :disabled="!validTemplateSelection" small>Load Template</v-btn>
+        <v-btn @click="loadTemplate" :disabled="!validTemplateSelection" small color="#2196F3">
+          Load Template
+        </v-btn>
+        <v-btn
+          @click="removeTemplate"
+          :disabled="!validTemplateSelection"
+          small
+          class="ml-1"
+          color="red"
+        >
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
         <div class="d-inline ml-3">{{ selectedTemplate }}</div>
       </v-col>
     </v-row>
@@ -45,6 +56,17 @@ export default {
       if (this.selectedTemplate != '') {
         this.validTemplateSelection = true
       }
+    },
+    removeTemplate() {
+      delete this.templates[this.selectedTemplate]
+      localStorage.templates = JSON.stringify(this.templates)
+      this.clearData()
+      this.$emit('savedTemplate')
+      Bus.$emit('clearEditor')
+    },
+    clearData() {
+        this.selectedTemplate = '',
+        this.validTemplateSelection = false
     }
   }
 }

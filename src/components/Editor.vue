@@ -57,18 +57,14 @@
         <button class="button" @click="save">
           Save Template
         </button>
-        <button class="button" @click="save">
+        <button class="button" @click="populateVariables">
           Populate Variables
         </button>
       </div>
 
       <div class="export">
         <h3>HTML</h3>
-        <pre><code>{{ html }}</code></pre>
-      </div>
-
-      <div>
-          {{variables}}
+        <pre><code data-testid="htmlbox">{{ html }}</code></pre>
       </div>
     </v-col>
   </v-row>
@@ -111,11 +107,14 @@ export default {
     Bus.$on('loadTemplate', name => {
       this.setContent(this.templates[name])
     }),
-    Bus.$on('loadVariable', name => {
-        console.log(this.variables[name])
+      Bus.$on('loadVariable', name => {
         let newHtml = this.html.slice(0, -4) + `[[${name}]]` + this.html.slice(-4)
         this.setContent(newHtml)
-    })
+      }),
+      Bus.$on('clearEditor', () => {
+        this.editor.setContent('', true)
+        this.editor.focus()
+      })
   },
   methods: {
     clearContent() {
@@ -137,7 +136,13 @@ export default {
       this.editor.focus()
     },
     populateVariables() {
-        
+      let regex = /\[\[(.*?)\]\]/gm
+      let tempvar = this.variables
+      let newhtml = this.html.replaceAll(regex, name => {
+        let trimmedName = name.slice(2, -2)
+        return tempvar[trimmedName]
+      })
+      this.setContent(newhtml)
     }
   }
 }

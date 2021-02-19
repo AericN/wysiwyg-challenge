@@ -19,7 +19,7 @@
       <h1 class="text-center">Templates</h1>
       <h3 class="text-center">These templates are stored in localstorage</h3>
       <v-card class="list my-3 mx-2">
-        <templates :templates="templates"></templates>
+        <templates :templates="templates" @savedTemplate="loadTemplates"></templates>
       </v-card>
 
       <!-- Variables Section -->
@@ -65,11 +65,9 @@ export default {
   methods: {
     loadTemplates() {
       this.templates = JSON.parse(localStorage.templates)
-      console.log('templates loaded')
     },
     loadVariables() {
       this.variables = JSON.parse(localStorage.variables)
-      console.log('variables loaded')
     }
   }
 }
@@ -77,9 +75,9 @@ export default {
 
 <style scoped>
 .list {
-  height: 20rem;
+  height: 20.4rem;
 }
 .editor {
-  min-height: 20rem;
+  min-height: 20.4rem;
 }
 </style>

@@ -14,6 +14,7 @@
     "tiptap-extensions": "^1.35.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
+    "vue-testing-library": "^0.17.0",
     "vuetify": "^2.4.0",
     "vuex": "^3.4.0"
   },
