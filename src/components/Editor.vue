@@ -1,6 +1,7 @@
 <template>
   <v-row>
     <v-col>
+      <!-- Toolbar and Editor -->
       <div class="editor">
         <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
           <div class="menubar">
@@ -45,28 +46,26 @@
             </button>
           </div>
         </editor-menu-bar>
-
         <editor-content class="editor__content" :editor="editor" />
       </div>
 
+      <!-- Buttons -->
       <div class="actions">
         <button class="button" @click="clearContent">
           Clear Content
         </button>
-        <button class="button" @click="setContent">
-          Set Content
-        </button>
-        <button class="button" @click="setContent">
-          Save
+        <button class="button" @click="save">
+          Save Template
         </button>
       </div>
 
       <div class="export">
-        <h3>JSON</h3>
-        <pre><code v-html="json"></code></pre>
-
         <h3>HTML</h3>
         <pre><code>{{ html }}</code></pre>
+      </div>
+
+      <div>
+          {{variables}}
       </div>
     </v-col>
   </v-row>
@@ -75,58 +74,61 @@
 <script>
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
 import { Bold, Italic, Strike, Underline, History } from 'tiptap-extensions'
+import { Bus } from '../main'
 export default {
   components: {
     EditorContent,
     EditorMenuBar
+  },
+  props: {
+    templates: Object,
+    selectedTemplate: String,
+    variables: Object
   },
   data() {
     return {
       editor: new Editor({
         extensions: [new Bold(), new Italic(), new Strike(), new Underline(), new History()],
         content: `
-          <h2>
-            Enter text here
-          </h2>
           <p>
-            You are able to create templates and dynamic variables.
+            Enter text here or load a template
+          </p>
+          <p>
+            You are also able to create templates and dynamic variables.
           </p>
         `,
-        onUpdate: ({ getJSON, getHTML }) => {
-          this.json = getJSON()
+        onUpdate: ({ getHTML }) => {
           this.html = getHTML()
         }
       }),
-      json: 'Update content to see changes',
       html: 'Update content to see changes'
     }
+  },
+  created() {
+    Bus.$on('loadTemplate', name => {
+      this.setContent(name)
+    }),
+    Bus.$on('loadVariable', name => {
+        console.log(this.variables[name])
+    })
   },
   methods: {
     clearContent() {
       this.editor.clearContent(true)
       this.editor.focus()
     },
-    setContent() {
-      // you can pass a json document
-      this.editor.setContent(
-        {
-          type: 'doc',
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                {
-                  type: 'text',
-                  text: 'This is some inserted text. 👋'
-                }
-              ]
-            }
-          ]
-        },
-        true
-      )
-      // HTML string is also supported
-      // this.editor.setContent('<p>This is some inserted text. 👋</p>')
+    save() {
+      let name = prompt('Enter Template Name:')
+      if (name == null || name == '') {
+        alert('Please Enter a valid Template name')
+        return
+      }
+      this.templates[name] = this.html
+      localStorage.templates = JSON.stringify(this.templates)
+      this.$emit('savedTemplate')
+    },
+    setContent(name) {
+      this.editor.setContent(this.templates[name], true)
       this.editor.focus()
     }
   }
