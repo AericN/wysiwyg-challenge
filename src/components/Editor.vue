@@ -57,6 +57,9 @@
         <button class="button" @click="save">
           Save Template
         </button>
+        <button class="button" @click="save">
+          Populate Variables
+        </button>
       </div>
 
       <div class="export">
@@ -106,10 +109,12 @@ export default {
   },
   created() {
     Bus.$on('loadTemplate', name => {
-      this.setContent(name)
+      this.setContent(this.templates[name])
     }),
     Bus.$on('loadVariable', name => {
         console.log(this.variables[name])
+        let newHtml = this.html.slice(0, -4) + `[[${name}]]` + this.html.slice(-4)
+        this.setContent(newHtml)
     })
   },
   methods: {
@@ -127,9 +132,12 @@ export default {
       localStorage.templates = JSON.stringify(this.templates)
       this.$emit('savedTemplate')
     },
-    setContent(name) {
-      this.editor.setContent(this.templates[name], true)
+    setContent(html) {
+      this.editor.setContent(html, true)
       this.editor.focus()
+    },
+    populateVariables() {
+        
     }
   }
 }

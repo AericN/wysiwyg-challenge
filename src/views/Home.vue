@@ -4,7 +4,7 @@
     <v-col cols="6">
       <h1 class="text-center">Editor</h1>
       <h3 class="text-center">This editor uses 'Tiptap' to power it</h3>
-      <v-card class="mt-6 mx-2">
+      <v-card class="mt-6 mx-2 editor">
         <editor
           :templates="templates"
           :selectedTemplate="selectedTemplate"
@@ -78,5 +78,8 @@ export default {
 <style scoped>
 .list {
   height: 20rem;
+}
+.editor {
+  min-height: 20rem;
 }
 </style>

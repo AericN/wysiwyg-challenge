@@ -11,6 +11,7 @@
 
     <!-- Variable list -->
     <div class="list mt-2">
+        <!-- Titles -->
       <v-row>
         <v-col cols="6" class="pl-4">
           Name
@@ -20,6 +21,8 @@
         </v-col>
       </v-row>
       <v-divider class="mb-2"></v-divider>
+
+      <!-- list -->
       <div
         v-for="(variable, name, index) in variables"
         :key="index"
